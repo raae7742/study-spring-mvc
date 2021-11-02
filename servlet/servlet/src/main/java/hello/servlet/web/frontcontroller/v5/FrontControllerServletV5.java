@@ -57,16 +57,13 @@ public class FrontControllerServletV5 extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         Object handler = getHandler(req);
-
         if (handler == null) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
         MyHandlerAdapter adapter = getHandlerAdapter(handler);
-
         ModelView mv = adapter.handle(req, resp, handler);
-
         String viewName = mv.getViewName();   // 논리이름 new-form
         MyView view = viewResolver(viewName);
 
@@ -74,18 +71,15 @@ public class FrontControllerServletV5 extends HttpServlet {
     }
 
     private MyHandlerAdapter getHandlerAdapter(Object handler) {
-        for (MyHandlerAdapter adapter : handlerAdapters) {
-            if (adapter.support(handler)) {
-                return adapter;
-            }
-        }
+        for (MyHandlerAdapter adapter : handlerAdapters)
+            if (adapter.support(handler)) return adapter;
+
         throw new IllegalArgumentException("handler adapter를 찾을 수 없습니다. handler=" + handler);
     }
 
     private Object getHandler(HttpServletRequest req) {
         String requestURI = req.getRequestURI();
         Object handler = handlerMappingMap.get(requestURI);
-
         return handler;
     }
 
